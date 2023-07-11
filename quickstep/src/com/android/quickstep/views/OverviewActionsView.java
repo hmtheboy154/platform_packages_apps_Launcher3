@@ -19,8 +19,11 @@ package com.android.quickstep.views;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -28,6 +31,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -133,6 +137,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private boolean mLens;
     private boolean mShakeClearAll;
 
+    public Resources res;
+
     public OverviewActionsView(Context context) {
         this(context, null);
     }
@@ -144,6 +150,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public OverviewActionsView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr, 0);
         SharedPreferences prefs = LauncherPrefs.getPrefs(context);
+        res = context.getResources();
         mScreenshot = prefs.getBoolean(KEY_RECENTS_SCREENSHOT, true);
         mClearAll = prefs.getBoolean(KEY_RECENTS_CLEAR_ALL, true);
         mLens = prefs.getBoolean(KEY_RECENTS_LENS, false);
@@ -381,9 +388,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         requestLayout();
 
-        mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical),
-                0, 0, 0);
+        Drawable splitbutton = ResourcesCompat.getDrawable(res,
+                (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical), null);
+        mSplitButton.setForeground(splitbutton);
+        mSplitButton.setForegroundGravity(Gravity.CENTER);
     }
 
     /**
